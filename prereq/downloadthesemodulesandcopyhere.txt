@@ -1,0 +1,14 @@
+You need these modules downloaded here for their specific tests
+owerforensics
+PoshUSNJournal
+Autoruns
+You also need this binary and its dependencies for the dumpbin test
+dumpbin.exe
+link.exe
+link.exe.config
+msobj80.dll
+mspdb80.dll
+mspdbcore.dll
+mspdbsrv.exe
+mspft80.dll
+

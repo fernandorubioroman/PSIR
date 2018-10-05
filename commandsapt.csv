@@ -1,0 +1,54 @@
+propertyname#command#Script#Description
+##############Prerequisites##############
+ImportModules#importmodules.ps1#true#Import required modules
+##############Hotfix status##############
+MissingFixes#MissingFixes.ps1#true#Get the missing fixes on the machines, requires updated wsusscn2.cab, see script code
+Fixes#get-hotfix | Select-Object PSComputerName,InstalledOn,HotFixID,InstallDate,Description#False#Get the list of installed hotfixes #
+##############Boot and Autoruns##############
+Services#get-service#False#Get the services information
+ScheduledTasks#get-scheduledtask#False#Get the scheduled tasks
+autoruns#autoruns.ps1#true#script that gets the software that runs automatically after reboot
+RegAssociationsMachine#get-childitem -path "HKLM:\Software\Classes"#False#gets the machine file associations 
+Modules#modules.ps1#true#Get the list of loaded modules
+Drivers#get-windowsdriver -online#False#Get the list of third party drivers running on the machine
+Bcdedit_unparsed#bcdeditunparsed.ps1#true#get the BCD the machine using bcdedit
+##############Audit&Eventlog##############
+EventlogSecurity#Get-WinEvent -FilterHashtable @{logname='Security'} -MaxEvents 10000 #False#Get the latest 10.000 events from security eventlog#
+EventlogSystem#Get-WinEvent -FilterHashtable @{logname='System'} -MaxEvents 10000 #False#Get the latest 10.000 events from security eventlog#
+EventlogApplication#Get-WinEvent -FilterHashtable @{logname='Application'} -MaxEvents 10000 #False#Get the latest 10.000 events from security eventlog#
+EvenLogPowershell#get-winevent -FilterHashtable @{logname='Windows PowerShell'} -MaxEvents 10000 #False#Get the latest 10.000 events from powershell eventlog#
+Audit#auditpol.ps1#true#get the audit policy of the machine using auditpol
+##############MachineInfo##############
+OSInfo#get-wmiobject Win32_OperatingSystem#False#Get the OS information and version#
+ComputerInfo#get-wmiobject Win32_ComputerSystem#False#Get the machine name, manufacturer, model, etc#
+DiskInfo#Get-wmiobject Win32_logicaldisk |where-object{$_.drivetype -eq 3}#False#Get the disk information
+##############Network Config##############
+ArpTable#mac.ps1#true#Get the parsed arp table of the machine
+IPInfo#get-wmiobject Win32_NetworkAdapterConfiguration -Filter IPEnabled=TRUE #False#Get the ip network card information#
+Shares#get-wmiobject Win32_share#False#Get the list of shares
+netconnections#netconnections.ps1#true#run a netstat -ano or powershell equivalent     
+Netaccounts#Netaccounts.ps1#true#gets the parsed password policy using netaccounts
+NetFile#NetFile.ps1#true#gets the files opened on the machine using adsi
+Netsessions#get-netsession.ps1#true#Get the list of all net sessions
+Firewall#firewall.ps1#true#Gets info about WindowsFirewall profiles and rules
+netstat#Get-NetTCPConnection#False#Get the opened network connections
+routeprint#routeprint.ps1#true#gets the machine routes
+HostParsed#hostparsed.ps1#true#Gets the parsed contents of the host file 
+##############Certificates##############
+RegCertificatesmachine#get-childitem -path "HKLM:\Software\Policies\Microsoft\SystemCertificates" -recurse#False#get the machine info about certificates from registry
+CertificatesAuthroot#get-childitem -path cert:\LocalMachine\Authroot#False#get the certificates in the authroot container
+certificatesroot#get-childitem -path cert:\LocalMachine\root#False#get the certificates in the root container
+##############Identities, groups...##############
+LocalGroups#localgroups.ps1#true#Get the list of local groups and their members using wmiobject
+privileges#privileges.ps1#true#get the list of assigned privileges using secedit
+##############Forensic Trails##############
+VSSShadows#Get-WmiObject win32_Shadowcopy#False#Gets the list of shadow copies on the machine
+usnjournal#usnjournal.ps1#true#gets the usn journal of C: volume, big file and slow to run
+prefetch#get-forensicprefetch#False#gets the files in the prefetch cache
+OfficeMru#Get-ForensicOfficeFileMru#False#gets the office file MRU
+##############Miscelaneous##############
+EnvironmentVariables#Get-ChildItem Env:#False#Get the environment Variables
+dumpbinWindows#dumpbin.ps1#true#gets an structured dumpbin /headers for files on windows folder and subfolders
+Handles#gethandles.ps1#true#gets  structured handles per each process
+UACReg#get-childitem -path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\system"#False#Get UAC registry settings 
+mrtFile#get-content -path C:\windows\debug\mrt.log#False#gets the content of the MSRT log
